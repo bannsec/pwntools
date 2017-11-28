@@ -759,7 +759,10 @@ def attach(target, gdbscript = None, exe = None, need_ptrace_scope = True, gdb_a
 
     log.info('running in new terminal: %s' % cmd)
 
-    gdb_pid = misc.run_in_new_terminal(cmd)
+    if "PWNTOOLS_RADARE" in os.environ and "port" in locals():
+        gdb_pid = misc.run_in_new_terminal("r2 -D gdb gdb://{ip:s}:{port:d}".format(ip=host,port=port))
+    else:
+        gdb_pid = misc.run_in_new_terminal(cmd)
 
     if pid and context.native:
         proc.wait_for_debugger(pid)
